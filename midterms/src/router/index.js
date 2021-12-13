@@ -7,6 +7,7 @@ import theme from "../util/theme"
 import SecondPage from '../pages/secondpage';
 import LandingPage from '../pages/main';
 
+
 export default function Index() {
     const THEME = createTheme(theme(true));
     return (
@@ -15,6 +16,7 @@ export default function Index() {
             <Routes>
                 <Route path="/"element={<LandingPage/>}  />
                 <Route path="/studentevaluation"element={<SecondPage/>}  />
+                
 
             </Routes>
         </Router>

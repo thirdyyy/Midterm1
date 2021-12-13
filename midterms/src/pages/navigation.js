@@ -1,11 +1,13 @@
 import * as React from 'react'
-import {AppBar, Box, Toolbar, Typography, Link, Avatar, Grid, Divider,styled, Modal, Button,InputBase} from '@mui/material';
+import {AppBar, Box, Toolbar, Link, Grid, styled, Modal, Button,InputBase} from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
 import {ReactComponent as User} from "../assets/user-circle-regular.svg";
-import {ReactComponent as Facebook} from "../assets/facebook-square-brands.svg";
-import {ReactComponent as Twitter} from "../assets/twitter-square-brands.svg";
-import {ReactComponent as Google} from "../assets/google-brands.svg";
+import { useState } from 'react';
+import { GoogleLogin, GoogleLogout } from 'react-google-login';
+
+const clientId = "35289938563-3aojaiotfcj7ra2s4m8645r60lrrhbu8.apps.googleusercontent.com";
+
 const classes = {
   
   appBar: {
@@ -99,6 +101,28 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 
 export default function Navigation() {
+
+ 
+  const [showloginButton, setShowloginButton] = useState(true);
+  const [showlogoutButton, setShowlogoutButton] = useState(false);
+  const onLoginSuccess = (res) => {
+    console.log("Login Success:", res.profileObj);
+    setShowloginButton(false);
+    setShowlogoutButton(true);
+  };
+
+  const onLoginFailure = (res) => {
+    console.log("Login Failed:", res);
+  };
+
+  const onSignoutSuccess = () => {
+    alert("You have been logged out successfully");
+    console.clear();
+    setShowloginButton(true);
+    setShowlogoutButton(false);
+  };
+
+
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
     setOpen(true);
@@ -143,7 +167,7 @@ export default function Navigation() {
               justifyContent="space-between"
               alignItems="center">
       <Button sx={classes.userButton} onClick={handleOpen}>
-          <User style={{ height:"25", color: "inherit",marginLeft: "20", float:"right", color:"white"}}/>
+          <User style={{ height:"25",marginLeft: "20", float:"right", color:"white"}}/>
           
         </Button><Modal
         open={open}
@@ -153,19 +177,26 @@ export default function Navigation() {
       >
         <Box sx={{ ...style, width: 200 }}>
 
-          <Typography variant="h5" sx={{color:"white", textAlign:"center"}}>Sign in</Typography>
-          <Typography  sx={{color:"white", textAlign:"center", fontSize:"13px"}}>
-          Sign in to review and rate students
-          </Typography>
-          <Button sx={{color: '#4C6EF5'}}>
-            <Facebook/>
-          </Button>
-          <Button sx={{color: '#4C6EF5'}}>
-            <Twitter/>
-          </Button>
-          <Button sx={{color: '#4C6EF5'}}>
-            <Google/>
-          </Button>
+        <div>
+            { showloginButton ?
+                <GoogleLogin
+                    clientId={clientId}
+                    buttonText="Sign In"
+                    onSuccess={onLoginSuccess}
+                    onFailure={onLoginFailure}
+                    cookiePolicy={'single_host_origin'}
+                    isSignedIn={true}
+                /> : null}
+
+            { showlogoutButton ?
+                <GoogleLogout
+                    clientId={clientId}
+                    buttonText="Sign Out"
+                    onLogoutSuccess={onSignoutSuccess}
+                >
+                </GoogleLogout> : null
+            }
+        </div>
         </Box>
       </Modal>
         
